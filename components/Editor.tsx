@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button } from '@mui/material';
-import ToolBar from './ToolBar';
+import ToolBar from './Toolbar';
 import Header from '@editorjs/header';
 import Paragraph from '@editorjs/paragraph';
 import Quote from '@editorjs/quote';
