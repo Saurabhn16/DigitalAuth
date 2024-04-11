@@ -1,0 +1,6 @@
+/* styles.css */
+
+/* Add a custom cursor style for the header element */
+#editorjs .ce-header {
+    cursor: pointer; /* Change the cursor to a pointer when hovering over the header */
+}

@@ -1,0 +1,3 @@
+const unsafeSelector = "div[data-id='block1']";
+const safeSelector = CSS.escape(unsafeSelector);
+console.log(safeSelector); // Output: "div\[data-id\=\'block1\'\]"
