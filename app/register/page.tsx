@@ -45,11 +45,15 @@ const Register = () => {
           password,
         }),
       });
+
       if (res.status === 400) {
         setError("This email is already registered");
       }
       if (res.status === 200) {
+        
         setError("");
+        document.cookie = `registrationId=true; max-age=3600; path=/`;
+        console.log( await res);
         router.push("/login");
       }
     } catch (error) {

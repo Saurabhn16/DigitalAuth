@@ -1,8 +1,7 @@
-import User from "@/models/User";
-import connect from "@/utils/db";
+import User from "../../models/User";
+import connect from "../../utils/db";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
-
 export const POST = async (request: any) => {
   const { email, password } = await request.json();
 
@@ -22,7 +21,20 @@ export const POST = async (request: any) => {
 
   try {
     await newUser.save();
-    return new NextResponse("user is registered", { status: 200 });
+
+    // Extract userId from newUser after saving to the database
+    const { _id: userId } = newUser;
+
+    return new NextResponse({
+      success: true,
+      msg: "User is registered",
+      data: {
+        userId, // Include userId in the response
+        email: newUser.email, // Optionally include other relevant data
+        createdAt: newUser.createdAt,
+        // Add more properties as needed
+      }
+    }, { status: 200});
   } catch (err: any) {
     return new NextResponse(err, {
       status: 500,

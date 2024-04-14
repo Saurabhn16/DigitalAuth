@@ -1,7 +1,7 @@
 // pages/index.tsx
 'use client'
 
-import EditorComponent from "@/components/Editor";
+import EditorComponent from "./components/Editor";
 
 
 const Home: React.FC = () => {

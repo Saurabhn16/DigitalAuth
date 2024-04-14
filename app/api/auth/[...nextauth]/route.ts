@@ -3,8 +3,8 @@ import { Account, User as AuthUser } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import User from "@/models/User";
-import connect from "@/utils/db";
+import User from "../../../models/User";
+import connect from "../../../utils/db";
 
 export const authOptions: any = {
   // Configure one or more authentication providers
@@ -30,6 +30,7 @@ export const authOptions: any = {
             }
           }
         } catch (err: any) {
+          console.error("Error authorizing credentials:", err);
           throw new Error(err);
         }
       },
@@ -41,6 +42,12 @@ export const authOptions: any = {
     // ...add more providers here
   ],
   callbacks: {
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
     async signIn({ user, account }: { user: AuthUser; account: Account }) {
       if (account?.provider == "credentials") {
         return true;
@@ -59,6 +66,7 @@ export const authOptions: any = {
           }
           return true;
         } catch (err) {
+          console.error("Error signing in with GitHub:", err);
           console.log("Error saving user", err);
           return false;
         }

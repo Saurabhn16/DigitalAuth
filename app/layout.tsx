@@ -1,10 +1,10 @@
-import Navbar from "@/components/Navbar";
+import Navbar from "./components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { getServerSession } from "next-auth";
-import SessionProvider from "@/utils/SessionProvider";
+import SessionProvider from "./utils/SessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
