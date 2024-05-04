@@ -23,22 +23,20 @@ import axios from 'axios';// Import the CSS file with custom styles
 import { Comment } from './CommentTool';
 import { useSession } from 'next-auth/react';
 import EditorJS from '@editorjs/editorjs';
-
+import styles from '../styles/styles.module.css';
 const EditorComponent = () => {
     const [editor, setEditor] = useState(null);
     const [versions, setVersions] = useState([]);
     const { data: session } = useSession();
-
-    useEffect(() => {
-        if (!editor) {
-            initializeEditor();
-        }
-    }, [editor]);
-
+    const [documents, setDocuments] = useState([]);
+    const [showDocumentCard, setShowDocumentCard] = useState(false);
+    const [selectedDocument, setSelectedDocument] = useState(null);
+    const [showSidebar, setShowSidebar] = useState(false);
     useEffect(() => {
         // Load verussions from local storage
         const savedVersions = localStorage.getItem('editor_versions');
         if (savedVersions) {
+            console.log("savingVersion");
             setVersions(JSON.parse(savedVersions));
         }
     }, []);
@@ -188,12 +186,110 @@ const EditorComponent = () => {
                     },
                 },
             });
-           setEditor(newEditor);
+            setEditor(newEditor);
         } catch (error) {
             console.error('Error initializing EditorJS:', error);
         };
     };
+    useEffect(() => {
+        if (!editor) {
+            initializeEditor();
+        }
+    }, [editor, initializeEditor]);
+    const viewDocument = async () => {
+        try {
+            console.log('Viewing content...');
 
+            if (session) {
+                console.log('Session:', session);
+                console.log('User ID:', session?.user?.id);
+                const userId = session.user.id;
+
+                const dataToSend = {
+                    userId: userId
+                };
+                console.log(dataToSend);
+
+                try {
+                    // Send a GET request to fetch document data
+                    // Send a GET request to fetch document data
+                    const response = await axios.get('/api/viewDocument', {
+                        params: { userId: userId },
+                        headers: {
+                            Authorization: `Bearer ${session.accessToken}`
+                        }
+                    });
+
+                    console.log("set");
+                    console.log(response.data.documents);
+                    setDocuments(response.data.documents);
+                    setSelectedDocument(true);
+
+
+                } catch (error) {
+                    console.error('Error fetching content data from server:', error);
+                }
+            }
+        } catch (error) {
+            console.error('Error viewing content:', error);
+        }
+    };
+
+    const viewDocumentVersions = async () => {
+        try {
+            const response = await axios.get('/api/viewVersion/'); // Replace 'yourDocumentId' with the actual document ID
+            console.log("Version data:", response.data); // Log the entire object
+
+            // Log keys and values of response.data
+            for (const key in response.data) {
+                console.log(`${key}:`, response.data[key]);
+            }
+
+            // If you know the specific structure of the response, you can access the version information accordingly
+            // For example, if versions are stored in a property called 'versions'
+            const versions = response.data.versions;
+            if (Array.isArray(versions)) {
+                console.log("Number of versions:", versions.length);
+                versions.forEach((version, index) => {
+                    console.log(`Version ${index + 1} Content:`, version.content);
+                    console.log(`Version ${index + 1} Created At:`, version.createdAt);
+                    // Log other properties of the version as needed
+                });
+            } else {
+                console.error("Versions not found or not in the expected format");
+            }
+
+            setShowSidebar(true);
+        } catch (error) {
+            console.error('Error fetching document versions:', error);
+        }
+    };
+    const closeSidebar = () => {
+        setShowSidebar(false);
+    };
+    const sidebarContent = (
+        <div className="sidebar">
+            <h2>Versions of Document</h2>
+            {versions.map((version, index) => (
+                <div key={index} className="version-card">
+                    <hs3>Version {index + 1}</hs3>
+                    <div className="version-details">
+                        <p><strong>Content:</strong> {JSON.stringify(version.content)}</p>
+                        <p><strong>Created At:</strong> {new Date(version.createdAt).toLocaleString()}</p>
+                    </div>
+                    <div className="button-container">
+                        <Button onClick={() => restoreVersion(index)} variant="contained" color="primary">
+                            Restore
+                        </Button>
+                    </div>
+                </div>
+            ))}
+            <Button onClick={closeSidebar} variant="contained" color="primary">
+                Close Sidebar
+            </Button>
+        </div>
+    );
+    
     const saveContentToFile = async () => {
         try {
             console.log('Saving content...');
@@ -204,7 +300,7 @@ const EditorComponent = () => {
             }
             // console.log("save", editor);            // Save the content using editor.save() and handle output data
 
-            const outputData =editor; // Await the save() function
+            const outputData = editor; // Await the save() function
             console.log('Output data:', outputData);
             const jsonData = JSON.stringify(outputData);
             console.log('JSON data:', jsonData);
@@ -242,8 +338,8 @@ const EditorComponent = () => {
         } catch (error) {
             console.error('Error saving content:', error);
         }
-    }; 
-     const saveVersionToFile = async () => {
+    };
+    const saveVersionToFile = async () => {
         try {
             console.log('Saving content...');
 
@@ -253,7 +349,7 @@ const EditorComponent = () => {
             }
             // console.log("save", editor);            // Save the content using editor.save() and handle output data
 
-            const outputData =editor; // Await the save() function
+            const outputData = editor; // Await the save() function
             console.log('Output data:', outputData);
             const jsonData = JSON.stringify(outputData);
             console.log('JSON data:', jsonData);
@@ -275,6 +371,7 @@ const EditorComponent = () => {
                     filename: filename,
                 };
 
+
                 // Send data to server-side API route for persistence
                 try {
                     const response = await axios.put('/api/saveVersion', dataToSend);
@@ -293,62 +390,7 @@ const EditorComponent = () => {
         }
     };
 
-    // const saveContentToFile = async () => {
-    //     try {
-    //       
-    //         if (editor) {
-    //             // console.log( await editor);
-    //             const outputData = await editor.save();
-    //             console.log('Output data:', outputData); // Log outputData
-    //             const jsonData = JSON.stringify(outputData);
-    //             console.log('JSON data:', jsonData); // Log jsonData
-    //             if (session) {
-    //                 console.log('Session:', session);
-    //                 console.log('User ID:', session?.user?.id);
-    //                 const userId = session.user.id; // Assuming 'id' is the field that contains the userId
-    //                 const filename = `data_${Date.now()}.json`;
-    //                 console.log('Filename:', filename); // Log filename
-    //                 // Now you can log the userId and include it in the data sent to the server
-    //                 console.log('User ID:', userId);
-    //                 console.log('Data to be sent to server:', {
-    //                     userId: userId,
-    //                     documentId: 'documentId', // Replace with actual document ID
-    //                     content: jsonData,
-    //                     filename: filename,
-    //                 });
-    //                 const blob = new Blob([jsonData], { type: 'application/json' });
-    //                 const url = window.URL.createObjectURL(blob);
-    //                 const a = document.createElement('a');
-    //                 a.href = url;
-    //                 a.download = 'editor_content.json';
-    //                 document.body.appendChild(a);
-    //                 a.click();
-    //                 window.URL.revokeObjectURL(url);
-    //                 document.body.removeChild(a);
-    //                 const formData = new FormData();
-    //                 formData.append('userId', userId);
-    //                 formData.append('documentId', 'documentId'); // Replace with actual document ID
-    //                 formData.append('content', blob, filename);
 
-    //                 // Send POST request to save content
-    //                 const response = await axios.put('/api/savecontent', formData);
-
-    //                 // Check response status and handle accordingly
-    //                 if (response.status === 200) {
-    //                     console.log('Content data sent to server successfully.');
-    //                 } else {
-    //                     console.error('Failed to send content data to server:', response.statusText);
-    //                 }
-    //             } else {
-    //                 console.log("Please login");
-    //             }
-    //         } else {
-    //             console.error('Editor instance not found');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error saving content:', error);
-    //     }
-    // };
 
     const loadContentFromFile = () => {
         const input = document.createElement('input');
@@ -361,6 +403,7 @@ const EditorComponent = () => {
                 reader.onload = () => {
                     try {
                         const jsonData = JSON.parse(reader.result);
+                        console.log(jsonData);
                         if (editor) {
                             editor.clear(); // Clear existing content
                             editor.render(jsonData); // Render new content
@@ -386,6 +429,21 @@ const EditorComponent = () => {
         };
         input.click();
     };
+    const restoreVersion = async (index) => {
+        try {
+            // Get the content of the selected version using the index
+            const versionContent = JSON.parse(versions[index].content);
+            console.log(versionContent);
+            // Render the content in the editor
+            if (editor) {
+                editor.clear(); // Clear existing content
+                editor.render(versionContent); // Render the content of the selected version
+            }
+        } catch (error) {
+            console.error('Error restoring version:', error);
+        }
+    };
+
 
     const downloadAsPDF = () => {
         const element = document.getElementById('editorjs');
@@ -396,7 +454,6 @@ const EditorComponent = () => {
             console.error('EditorJS element not found');
         }
     };
-
     const convertToDocx = async () => {
         if (editor) {
             try {
@@ -445,6 +502,22 @@ const EditorComponent = () => {
             <Button onClick={saveContentToFile} variant="contained" color="primary">
                 Save Content
             </Button>
+            <Button onClick={viewDocument} variant="contained" color="primary">
+                View Document
+            </Button>
+            {/* Conditional rendering of document cards */}
+            {setSelectedDocument && (
+                <div className="mt-4">
+                    <h2 className="text-lg font-semibold mb-2">Document Details</h2>
+                    {documents.map((document, index) => (
+                        <div key={index} className="mb-4">
+                            <h3>{document.title}</h3>
+                            <p>Created At: {new Date(document.createdAt).toLocaleString()}</p>
+                            {/* Render other details of the document as needed */}
+                        </div>
+                    ))}
+                </div>
+            )}
             <Button onClick={saveVersionToFile} variant="contained" color="secondary">
                 Save Version
             </Button>
@@ -454,6 +527,14 @@ const EditorComponent = () => {
             <Button onClick={convertToDocx} variant="contained" color="primary">
                 Convert to DOCX
             </Button>
+            <div className="container mx-auto p-4 border border-black">
+                <h1 className="text-3xl font-bold mb-4">View Version</h1>
+
+                <Button onClick={viewDocumentVersions} variant="contained" color="primary">
+                    View Document Versions
+                </Button>
+                {showSidebar && sidebarContent}
+            </div>
         </div>
     );
 };

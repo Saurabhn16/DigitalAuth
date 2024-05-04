@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import connect from "../../utils/db"; // Assuming your DB connection utility
 import User from "../../models/User"; // Import User model
 import Document from "../../models/Document";
+import chalk from "chalk";
 
 const saveContentToMongoDB = async (userId: string, documentId: string, content: string) => {
   try {
@@ -43,11 +44,11 @@ export const PUT =  async (req: any, res: NextApiResponse) => {
     // Check if the request method is POST
     if (req.method !== "PUT") {
       return res.status(405).json({ message: "Method not allowed" });
-    }
-
+    } 
+    console.log(req);
     // Parse the request body to extract data
     const { userId, documentId, content } = await req.json();
-    console.log(userId, " ", documentId, " ", content )
+    console.log(chalk.red(userId, " ", documentId, " ", content ))
     if (!userId || !documentId || !content) {
       return new NextResponse({
         success: false,
