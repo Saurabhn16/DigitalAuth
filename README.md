@@ -1,4 +1,3 @@
-Certainly! Here's the complete README.md content in one file:
 
 ```markdown
 # DigitalAuth
