@@ -23,7 +23,7 @@ import axios from 'axios';// Import the CSS file with custom styles
 import { Comment } from './CommentTool';
 import { useSession } from 'next-auth/react';
 import EditorJS from '@editorjs/editorjs';
-import styles from '../styles/styles.module.css';
+import styles from '../components/styles.module.css';
 const EditorComponent = () => {
     const [editor, setEditor] = useState(null);
     const [versions, setVersions] = useState([]);
@@ -289,7 +289,7 @@ const EditorComponent = () => {
             </Button>
         </div>
     );
-    
+
     const saveContentToFile = async () => {
         try {
             console.log('Saving content...');
@@ -493,49 +493,50 @@ const EditorComponent = () => {
     };
 
     return (
-        <div className="container mx-auto p-4 border border-black">
-            <h1 className="text-3xl font-bold mb-4">Editor</h1>
-            <div id="editorjs" className="border border-black mb-4"></div>
-            <Button onClick={downloadAsPDF} variant="contained" color="primary">
-                Download as PDF
-            </Button>
-            <Button onClick={saveContentToFile} variant="contained" color="primary">
-                Save Content
-            </Button>
-            <Button onClick={viewDocument} variant="contained" color="primary">
-                View Document
-            </Button>
-            {/* Conditional rendering of document cards */}
-            {setSelectedDocument && (
-                <div className="mt-4">
-                    <h2 className="text-lg font-semibold mb-2">Document Details</h2>
-                    {documents.map((document, index) => (
-                        <div key={index} className="mb-4">
-                            <h3>{document.title}</h3>
-                            <p>Created At: {new Date(document.createdAt).toLocaleString()}</p>
-                            {/* Render other details of the document as needed */}
-                        </div>
-                    ))}
-                </div>
-            )}
-            <Button onClick={saveVersionToFile} variant="contained" color="secondary">
-                Save Version
-            </Button>
-            <Button onClick={loadContentFromFile} variant="contained" color="primary">
-                Load Content
-            </Button>
-            <Button onClick={convertToDocx} variant="contained" color="primary">
-                Convert to DOCX
-            </Button>
-            <div className="container mx-auto p-4 border border-black">
-                <h1 className="text-3xl font-bold mb-4">View Version</h1>
-
-                <Button onClick={viewDocumentVersions} variant="contained" color="primary">
-                    View Document Versions
-                </Button>
-                {showSidebar && sidebarContent}
-            </div>
+        <div className={styles.container}>
+        <h1 className={styles.header}>Editor</h1>
+        <div id="editorjs" className={styles.editor}></div>
+        <div className={styles.buttonGroup}>
+          <Button onClick={downloadAsPDF} variant="contained" color="primary">
+            Download as PDF
+          </Button>
+          <Button onClick={saveContentToFile} variant="contained" color="primary">
+            Save Content
+          </Button>
+          <Button onClick={viewDocument} variant="contained" color="primary">
+            View Document
+          </Button>
         </div>
+        {setSelectedDocument && (
+          <div className={styles.documentDetails}>
+            <h2 className="text-lg font-semibold mb-2">Document Details</h2>
+            {documents.map((document, index) => (
+              <div key={index} className={styles.documentCard}>
+                <h3 className="font-bold">{document.title}</h3>
+                <p>Created At: {new Date(document.createdAt).toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className={styles.buttonGroup}>
+          <Button onClick={saveVersionToFile} variant="contained" color="secondary">
+            Save Version
+          </Button>
+          <Button onClick={loadContentFromFile} variant="contained" color="primary">
+            Load Content
+          </Button>
+          <Button onClick={convertToDocx} variant="contained" color="primary">
+            Convert to DOCX
+          </Button>
+        </div>
+        <div className={styles.versionContainer}>
+          <h1 className={styles.header}>View Version</h1>
+          <Button onClick={viewDocumentVersions} variant="contained" color="primary">
+            View Document Versions
+          </Button>
+          {showSidebar && <div className={styles.sidebar}>{sidebarContent}</div>}
+        </div>
+      </div>
     );
 };
 

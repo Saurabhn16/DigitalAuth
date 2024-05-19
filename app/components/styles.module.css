@@ -15,4 +15,67 @@
     background-color: #fff;
 }
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    border: 1px solid black;
+  }
+  
+  .header {
+    font-size: 2rem; /* Equivalent to text-3xl in Tailwind CSS */
+    font-weight: bold;
+    margin-bottom: 1rem; /* Equivalent to mb-4 in Tailwind CSS */
+  }
+  
+  .editor {
+    border: 1px solid black;
+    margin-bottom: 1rem; /* Equivalent to mb-4 in Tailwind CSS */
+    padding: 1rem;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 1rem; /* Equivalent to gap-4 in Tailwind CSS */
+    margin-bottom: 1rem; /* Equivalent to mb-4 in Tailwind CSS */
+  }
+  
+  .document-details {
+    margin-top: 1rem; /* Equivalent to mt-4 in Tailwind CSS */
+  }
+  
+  .document-card {
+    margin-bottom: 1rem; /* Equivalent to mb-4 in Tailwind CSS */
+    padding: 1rem;
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 0.5rem; /* Equivalent to rounded-lg in Tailwind CSS */
+  }
+  
+  .version-container {
+    margin-top: 1.5rem; /* Equivalent to mt-6 in Tailwind CSS */
+    padding: 1rem;
+    border: 1px solid black;
+  }
+  
+  .sidebar {
+    margin-top: 1rem; /* Equivalent to mt-4 in Tailwind CSS */
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .button-group {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem; /* Smaller gap on mobile */
+    }
+  
+    .document-card {
+      padding: 0.75rem; /* Slightly smaller padding on mobile */
+    }
+  
+    .version-container {
+      padding: 0.75rem; /* Slightly smaller padding on mobile */
+    }
+  }
+  
 /* Other styles... */

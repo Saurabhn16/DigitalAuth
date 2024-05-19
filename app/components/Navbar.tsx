@@ -1,47 +1,54 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
+import styles from './Navbar.module.css';
 
 const Navbar = () => {
-  const { data: session }: any = useSession();
+  const { data: session } = useSession();
+  const [navActive, setNavActive] = useState(false);
+
+  const toggleNav = () => {
+    setNavActive(!navActive);
+  };
+
   return (
-    <div>
-      <ul className="flex justify-between m-10 item-center">
-        <div>
-          <Link href="/">
-            <li>Home</li>
-          </Link>
-        </div>
-        <div className="flex gap-10">
-          <Link href="/dashboard">
-            <li>Dashboard</li>
-          </Link>
-          {!session ? (
-            <>
-              <Link href="/login">
-                <li>Login</li>
-              </Link>
-              <Link href="/register">
-                <li>Register</li>
-              </Link>
-            </>
-          ) : (
-            <>
-            {session.user?.email}
-              <li>
-                <button
-                  onClick={() => {
-                    signOut();
-                  }}
-                  className="p-2 px-5 -mt-1 bg-blue-800 rounded-full"
-                >
-                  Logout
-                </button>
-              </li>
-            </>
-          )}
-        </div>
+    <div className={styles.navbar}>
+      {/* Button to toggle navbar visibility */}
+     
+
+      {/* Navbar links */}
+      <ul className={`${styles.navlist} ${navActive ? styles.active : ""}`}>
+        <li className={styles.navitem}>
+          <Link href="/">Home</Link>
+        </li>
+        <li className={styles.navitem}>
+          <Link href="/dashboard">Dashboard</Link>
+        </li>
+        {!session ? (
+          <>
+            <li className={styles.navitem}>
+              <Link href="/login">Login</Link>
+            </li>
+            <li className={styles.navitem}>
+              <Link href="/register">Register</Link>
+            </li>
+          </>
+        ) : (
+          <>
+            <span className={styles.sessionEmail}>{session.user?.email}</span>
+            <li>
+              <button
+                onClick={() => {
+                  signOut();
+                }}
+                className={styles.button}
+              >
+                Logout
+              </button>
+            </li>
+          </>
+        )}
       </ul>
     </div>
   );

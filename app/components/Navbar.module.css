@@ -1,0 +1,66 @@
+/* components/Navbar.module.css */
+.navbar {
+    background-color: #333;
+    padding: 1rem;
+  }
+  
+  .navlist {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    margin: 10px 0;
+    padding: 0;
+  }
+  
+  .navitem {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+  }
+  
+  .navitem:hover {
+    color: #1e90ff;
+  }
+  
+  .navlink {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .button {
+    padding: 0.5rem 1rem;
+    background-color: #1e40af; /* Tailwind's blue-800 */
+    color: white;
+    border: none;
+    border-radius: 9999px; /* Tailwind's rounded-full */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #1e3a8a; /* Slightly darker blue */
+  }
+  
+  .sessionEmail {
+    color: white;
+    margin-right: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .navlist {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .navitem {
+      margin-bottom: 0.5rem;
+    }
+  
+    .sessionEmail {
+      margin-bottom: 0.5rem;
+    }
+  }
+  
