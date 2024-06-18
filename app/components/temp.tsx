@@ -29,7 +29,7 @@ const EditorComponent = () => {
     const [editor, setEditor] = useState(null);
     const [versions, setVersions] = useState([]);
     const [documentId, setDocumentid] = useState([]);
-    const [currentView, setCurrentView] = useState('');
+
 
     const toggleSidebar = () => {
         setShowSidebar(!showSidebar);
@@ -49,13 +49,8 @@ const EditorComponent = () => {
             setVersions(JSON.parse(savedVersions));
         }
     }, []);
-    const toggleUsers = () => {
-        setShowUsers(!showUsers);
-      };
-      const toggleSidebar1 = () => {
-        setShowSidebar(!showSidebar);
-      };
-    
+
+
     const justSave = async (data) => {
 
         console.log("editior", data);
@@ -233,7 +228,7 @@ const EditorComponent = () => {
                     console.log("set");
                     console.log(response.data.documents);
                     setDocuments(response.data.documents);
-                    setSelectedDocument(!selectedDocument);
+                    setSelectedDocument(true);
 
 
                 } catch (error) {
@@ -275,7 +270,7 @@ const EditorComponent = () => {
                     console.log("Users data received:");
                     console.log(response.data.users);
                     setUsers(response.data.users);
-                    setShowUsers(!showUsers);
+                    setShowUsers(true);
 
                 } catch (error) {
                     console.error('Error fetching users data from server:', error);
@@ -322,7 +317,7 @@ const EditorComponent = () => {
             } else {
                 console.error("Versions not found or not in the expected format");
             }
-            setShowSidebar(!showSidebar);
+            setShowSidebar(true);
         } catch (error) {
             console.error('Error fetching document versions:', error);
         }
@@ -373,7 +368,9 @@ const EditorComponent = () => {
                     </div>
                 </div>
             ))}
-        
+            <Button onClick={closeSidebar} variant="contained" color="primary">
+                Close Sidebar
+            </Button>
         </div>
     );
 
@@ -581,98 +578,76 @@ const EditorComponent = () => {
         }
     };
 
-    return (<><div>
-        <div style={{ display: 'flex' }}>
-          <div className={showSidebar ? styles.sidebarOpen : styles.sidebarClosed}>
-            <div className={styles.sidebar}>
-              <Button onClick={toggleSidebar} variant="contained" color="primary">
-                Menu
-              </Button>
-          
-              <div className={styles.sidebarButton}>
-                <Button onClick={downloadAsPDF} variant="contained" color="primary">
-                  Download as PDF
-                </Button>
-              </div>
-              <div className={styles.sidebarButton}>
-                <Button onClick={saveContentToFile} variant="contained" color="primary">
-                  Save Content
-                </Button>
-              </div>
-              <div className={styles.sidebarButton}>
-                <Button onClick={viewDocument} variant="contained" color="primary">
-                  View Document
-                </Button>
-              </div>
-              {selectedDocument && (
+    return (<>  <div className={styles.buttonGroup}>
+        <div className={showSidebar ? styles.sidebarOpen : styles.sidebarClosed}>
+            <Button onClick={downloadAsPDF} variant="contained" color="primary">
+                Download as PDF
+            </Button>
+            <Button onClick={saveContentToFile} variant="contained" color="primary">
+                Save Content
+            </Button>
+            <Button onClick={viewDocument} variant="contained" color="primary">
+                View Document
+            </Button>
+
+            {selectedDocument && (
                 <div className={styles.documentDetails}>
-                  {documents.map((document, index) => (
-                    <div key={index} className={styles.documentCard}>
-                      <h3 className="font-bold">{document.title}</h3>
-                      <p>Created At: {new Date(document.createdAt).toLocaleString()}</p>
-                      <Button onClick={() => setDocument(document._id)} variant="contained" color="primary">
-                        Set Document
-                      </Button>
-                    </div>
-                  ))}
+
+                    {documents.map((document, index) => (
+                        <div key={index} className={styles.documentCard}>
+                            <h3 className="font-bold">{document.title}</h3>
+                            <p>Created At: {new Date(document.createdAt).toLocaleString()}</p>
+                            <Button onClick={() => setDocument(document._id)} variant="contained" color="primary">
+                                Set Document
+                            </Button>
+                        </div>
+                    ))}
                 </div>
-              )}
-              <div className={styles.sidebarButton}>
-                <Button onClick={saveVersionToFile} variant="contained" color="secondary">
-                  Save Version
-                </Button>
-              </div>
-              <div className={styles.sidebarButton}>
-                <Button onClick={loadContentFromFile} variant="contained" color="primary">
-                  Load Content
-                </Button>
-              </div>
-              <div className={styles.sidebarButton}>
-                <Button onClick={convertToDocx} variant="contained" color="primary">
-                  Convert to DOCX
-                </Button>
-              </div>
-              <div className={styles.sidebarButton}>
-                <Button onClick={viewUsers} variant="contained" color="primary">
-                  View All Users
-                </Button>
-              </div>
-              <div className={styles.sidebarButton}>
-                <Button onClick={viewDocumentVersions} variant="contained" color="primary">
-                  View Document Versions
-                </Button>
-                {showSidebar && <div className={styles.sidebar}>{sidebarContent}</div>}
-              </div>
-            </div>
-          </div>
-      
-          <div className={styles.mainContent}>
-          
-      
-            {showUsers && (
-              <div className={styles.usersContainer}>
+            )}
+
+            <Button onClick={saveVersionToFile} variant="contained" color="secondary">
+                Save Version
+            </Button>
+            <Button onClick={loadContentFromFile} variant="contained" color="primary">
+                Load Content
+            </Button>
+            <Button onClick={convertToDocx} variant="contained" color="primary">
+                Convert to DOCX
+            </Button>
+            <Button onClick={viewUsers} variant="contained" color="primary">
+                View All Users
+            </Button>
+
+            <Button onClick={viewDocumentVersions} variant="contained" color="primary">
+                View Document Versions
+            </Button>
+            {showSidebar && <div className={styles.sidebar}>{sidebarContent}</div>}
+        </div>
+        {showUsers && (
+            <div className={styles.usersContainer}>
                 <h2>All Users</h2>
                 <ul>
-                  {users.map((user) => (
-                    <li key={user._id}>
-                      {user._id}({user.email})
-                      <Button onClick={() => shareDocumentWithUser(user._id)} variant="contained" color="primary">
-                        Share Document
-                      </Button>
-                    </li>
-                  ))}
+                    {users.map(user => (
+
+                        <li key={user._id}>
+                            {user._id}({user.email})
+                            <Button onClick={() => shareDocumentWithUser(user._id)} variant="contained" color="primary">
+                                Share Document
+                            </Button>
+                        </li>
+                    ))}
                 </ul>
-              </div>
-            )}
-          </div>
-       
-      
+            </div>
+        )}
+    </div>
+
         <div className={styles.container}>
-          <h1 className={styles.header}>Editor</h1>
-          <div id="editorjs" className={styles.editor}></div>
-        </div></div></div>
-      </>
-       );
+            <h1 className={styles.header}>Editor</h1>
+            <div id="editorjs" className={styles.editor}></div>
+        </div>
+    </>
+
+    );
 };
 
 export default EditorComponent;

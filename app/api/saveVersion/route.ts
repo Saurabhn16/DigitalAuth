@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import connect from "../../utils/db"; // Assuming your DB connection utility
 import User from "../../models/User"; // Import User model
 import Document from "../../models/Document";
-
+import chalk from "chalk";;
 const saveContentToMongoDB = async (userId: string, documentId: string, content: string) => {
   try {
     console.log("it also working")
@@ -17,7 +17,7 @@ const saveContentToMongoDB = async (userId: string, documentId: string, content:
       throw new Error("User not found");
     }
 
-    const document = await Document.findOne({ documentId });
+    const document = await Document.findById(documentId);
 
     if (!document) {
       throw new Error("Document not found");
@@ -45,7 +45,7 @@ export const PUT =  async (req: any, res: NextApiResponse) => {
 
     // Parse the request body to extract data
     const { userId, documentId, content } = await req.json();
-    console.log(userId, " ", documentId, " ", content )
+    console.log(chalk.red(userId, "UserId ", documentId, "  documentID ", content ))
     if (!userId || !documentId || !content) {
       return new NextResponse({
         success: false,

@@ -9,8 +9,12 @@ export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "GET") {
       return res.status(405).json({ message: "Method not allowed" });
     }
+    const url = new URL(req.url);
+    console.log("url", url.searchParams);
+    const _id = url.searchParams.get('documentId');
+    console.log(chalk.red("UserId:", _id));
     // Parse the documentId from query parameters
-    const _id = "661e6340b32a227bb6733f8d";
+   
 
     // Validate _id
     if (!_id) {

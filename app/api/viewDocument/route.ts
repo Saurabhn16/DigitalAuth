@@ -5,19 +5,17 @@ import User from "../../models/User";
 import { NextResponse } from "next/server";
 import chalk from "chalk";
 
-export const GET = async (req: NextApiRequest, res: any) => {
+export const GET = async (req: any, res: any) => {
     try {
         // Check if the request method is GET
+        console.log(chalk.red(req.method));
         if (req.method !== "GET") {
             return res.status(405).json({ message: "Method not allowed" });
         }
-
-        // Get the session
-        
-
-        // Extract user ID from the session
-        const userId = "661974e8ae457efdd3117536"; // Set userId to the specified value
-        // console.log(chalk.red(userId));
+        const url = new URL(req.url);
+        console.log("url", url.searchParams);
+        const userId = url.searchParams.get('userId');
+        console.log(chalk.red("UserId:", userId));
         // Connect to the MongoDB database
         await connect();
         // console.log(chalk.green("Connected to the database")); // Log message indicating successful connection
@@ -37,7 +35,7 @@ export const GET = async (req: NextApiRequest, res: any) => {
             }, { status: 404 });
         }
         console.log(chalk.red(user.documents));
-        console.log(typeof(user.documents))
+        console.log(typeof (user.documents))
         const documents = user.documents;
         // .map((document) => document.toObject());
 
@@ -50,10 +48,10 @@ export const GET = async (req: NextApiRequest, res: any) => {
         // }); 
 
         // console.log(chalk.red("this is document"))
-        console.log(typeof(documents))
+        console.log(typeof (documents))
         console.log(documents)
         // Return the documents associated with the user
-        return  NextResponse.json({
+        return NextResponse.json({
             success: true,
             documents,
             msg: "Documents fetched successfully",

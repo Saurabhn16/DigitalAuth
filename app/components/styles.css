@@ -4,20 +4,86 @@
 #editorjs .ce-header {
     cursor: pointer; /* Change the cursor to a pointer when hovering over the header */
 }
-/* styles.module.css */
-.sidebar {
-    background-color: #f7f7f7;
+
+
+  
+  .sidebar {
+    flex: 1;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+    background-color: #f0f0f0; /* Example background color */
+  }
+  
+  .mainContent {
+    flex: 4;
+    padding: 20px;
+    background-color: #ffffff; /* Example background color */
+  }
+  
+  /* Styles for sidebar buttons */
+  .sidebarButton {
+    margin-bottom: 10px;
+  }
+  
+  /* Additional styles for sidebar and main content */
+  .sidebarOpen {
+    width: 200px; /* Adjust the width of the sidebar when it's open */
+  }
+  
+  .sidebarClosed {
+    width: 0; /* Hide the sidebar when it's closed */
+  }
+  
+  /* styles.module.css */
 
-.version-card {
+.sidebar {
+    background-color: #f4f4f4;
+    padding: 10px;
+    transition: width 0.3s ease;
+  }
+  
+  .sidebarOpen {
+    width: 20%; /* 20% of the container's width */
+  }
+  
+  .sidebarClosed {
+    width: 5%; /* 5% of the container's width */
+  }
+  
+  .sidebarButton {
+    margin-bottom: 10px;
+  }
+  
+  .mainContent {
+    width: 80%; /* 80% of the container's width */
+    padding: 20px;
+    background-color: #ffffff;
+  }
+  
+  .container {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .header {
+    font-size: 24px;
     margin-bottom: 20px;
-    padding: 15px;
+  }
+  
+  .editor {
     border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-}
-
-/* Other styles... */
+    padding: 10px;
+    min-height: 400px;
+  }
+  
+  .usersContainer {
+    margin-top: 20px;
+  }
+  
+  .documentDetails {
+    margin-top: 20px;
+  }
+  
+  .documentCard {
+    margin-bottom: 20px;
+  }
+  

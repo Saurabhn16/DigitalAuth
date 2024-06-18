@@ -18,11 +18,18 @@ const saveContentToMongoDB = async (userId: string, documentId: string, content:
       throw new Error("User not found");
     }
 
-    // // Create a new document object
-    const newDocument = new Document({
-      documentId,
-      versions: [{ content }],
-    });
+    let newDocument;
+    if (documentId) {
+      newDocument = new Document({
+        documentId,
+        versions: [{ content }],
+        createdBy:userId,
+      });
+    } else {
+      newDocument = new Document({
+        versions: [{ content }],
+      });
+    }
 
     // Save the new document
     const savedDocument = await newDocument.save();
@@ -49,7 +56,7 @@ export const PUT =  async (req: any, res: NextApiResponse) => {
     // Parse the request body to extract data
     const { userId, documentId, content } = await req.json();
     console.log(chalk.red(userId, " ", documentId, " ", content ))
-    if (!userId || !documentId || !content) {
+    if (!userId || !content) {
       return new NextResponse({
         success: false,
         msg: "Missing Required",
