@@ -7,7 +7,6 @@ import Warning from '@editorjs/warning';
 import Alert from '@alkhipce/editorjs-aitext';
 import ToggleBlock from 'editorjs-toggle-block';
 import NestedList from '@editorjs/nested-list';
-import Checklist from '@editorjs/checklist';
 import Tooltip from 'editorjs-tooltip';
 import Table from '@editorjs/table';
 import Title from 'title-editorjs';
@@ -17,14 +16,14 @@ import html2pdf from 'html2pdf.js';
 import AttachesTool from '@editorjs/attaches';
 import CodeTool from '@editorjs/code';
 import mammoth from 'mammoth'; // Import mammoth for .docx conversion
-import RenderItem from './RenderItem'; // Make sure this import is correct
+// Make sure this import is correct
 import './styles.css';
 import axios from 'axios';// Import the CSS file with custom styles
-import { Comment } from './CommentTool';
+
 import { useSession } from 'next-auth/react';
 import EditorJS from '@editorjs/editorjs';
 import styles from '../components/styles.module.css';
-import { ObjectId } from 'bson';
+
 const EditorComponent = () => {
     const [editor, setEditor] = useState(null);
     const [versions, setVersions] = useState([]);
@@ -173,31 +172,8 @@ const EditorComponent = () => {
                         config: {
                             endpoint: 'http://localhost:3000/uploadFile',
                         },
-                    },
-                    comment: {
-                        class: Comment,
-                        inlineToolbar: true,
-                        config: {
-                            markerColor: 'grey', // optional
-                            activeColor: 'green', // optional
-                            renderBody: ({
-                                commentBlockId,
-                                blockId,
-                                onClose,
-                                addCommentBlockData,
-                                text,
-                            }) => {
-                                return RenderItem({
-                                    onClose,
-                                    blockId,
-                                    commentBlockId,
-                                    addCommentBlockData,
-                                    text,
-                                });
-                            },
-                            removeBlockComments: () => { }, // Add this dummy function
-                        },
-                    },
+                    }
+                  
                 },
             });
             setEditor(newEditor);
